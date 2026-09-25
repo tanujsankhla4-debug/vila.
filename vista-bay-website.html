@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vista Bay — Luxury Real Estate</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #F5F2ED;
+    --bg2:     #EDEAE3;
+    --bg3:     #E6E1D8;
+    --white:   #FFFFFF;
+    --ink:     #1C1B19;
+    --ink2:    #3A3830;
+    --stone:   #7A7568;
+    --gold:    #B8963E;
+    --gold2:   #D4AF60;
+    --teal:    #3D7A7C;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *, *::before, *::after { box-sizing: inherit; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    overflow-x: hidden;
+    font-weight: 300;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: env(safe-area-inset-top, 0px);
+    left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.4rem 3rem;
+    transition: background 0.4s, padding 0.4s, box-shadow 0.4s;
+  }
+  nav.scrolled {
+    background: rgba(245,242,237,0.96);
+    backdrop-filter: blur(14px);
+    padding: 0.85rem 3rem;
+    box-shadow: 0 1px 0 rgba(28,27,25,0.08);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    color: var(--white);
+    text-decoration: none;
+    transition: color 0.4s;
+  }
+  nav.scrolled .nav-logo { color: var(--ink); }
+  .nav-logo span { color: var(--gold2); }
+  nav.scrolled .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 2.4rem; list-style: none; }
+  .nav-links a {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    transition: color 0.3s;
+  }
+  nav.scrolled .nav-links a { color: var(--stone); }
+  .nav-links a:hover { color: var(--white); }
+  nav.scrolled .nav-links a:hover { color: var(--ink); }
+  .nav-cta {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.55);
+    color: var(--white);
+    padding: 0.5rem 1.4rem;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 400;
+  }
+  nav.scrolled .nav-cta { border-color: var(--gold); color: var(--gold); }
+  .nav-cta:hover { background: var(--gold2); border-color: var(--gold2); color: var(--white); }
+  nav.scrolled .nav-cta:hover { background: var(--gold); color: var(--white); }
+
+  /* ─── HAMBURGER & MOBILE MENU ─── */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 42px;
+    height: 42px;
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    transition: all 0.3s ease;
+    z-index: 101;
+  }
+  .hamburger:hover {
+    background: rgba(255, 255, 255, 0.28);
+  }
+  .hamburger span {
+    width: 20px;
+    height: 2px;
+    background: var(--white);
+    border-radius: 2px;
+    transition: background 0.3s ease;
+    display: block;
+  }
+  nav.scrolled .hamburger {
+    background: rgba(28, 27, 25, 0.06);
+    border-color: rgba(28, 27, 25, 0.12);
+  }
+  nav.scrolled .hamburger span {
+    background: var(--ink);
+  }
+
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(245, 242, 237, 0.98);
+    backdrop-filter: blur(20px);
+    z-index: 999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2.2rem;
+  }
+  .mobile-menu.open {
+    display: flex;
+  }
+  .mobile-menu a {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    position: relative;
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+  .mobile-menu a:hover, .mobile-menu a:active {
+    color: var(--gold);
+    transform: translateY(-2px);
+  }
+  .close-menu {
+    position: absolute;
+    top: max(1.5rem, env(safe-area-inset-top, 0px) + 1rem);
+    right: 1.5rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(28, 27, 25, 0.08);
+    border: 1px solid rgba(28, 27, 25, 0.15);
+    color: var(--ink);
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    line-height: 1;
+  }
+  .close-menu:hover, .close-menu:active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--white);
+    transform: rotate(90deg);
+  }
+
+  /* ─── HERO with VIDEO ─── */
+  .hero {
+    height: 100vh; min-height: 600px;
+    position: relative; display: flex;
+    align-items: center; justify-content: center;
+    overflow: hidden;
+    background: #000;
+  }
+  .hero-video {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center;
+    z-index: 0;
+    filter: saturate(1.05) contrast(1.08) brightness(1);
+    transform: scale(1);
+    transform-origin: center center;
+    transition: transform 0.2s ease-out;
+    background: #000;
+  }
+  .hero-overlay {
+    position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(
+      to top,
+      rgba(10,12,13,0.36) 0%,
+      rgba(10,12,13,0.18) 45%,
+      rgba(10,12,13,0.08) 100%
+    );
+  }
+  .hero-content {
+    position: relative; z-index: 2;
+    padding: 0; max-width: 0; opacity: 0; pointer-events: none;
+    display: none;
+  }
+
+  .btn-primary {
+    background: var(--gold); color: var(--white);
+    border: none; padding: 0.85rem 2rem;
+    font-family: 'Jost', sans-serif; font-size: 0.78rem;
+    letter-spacing: 0.1em; cursor: pointer; font-weight: 400;
+    transition: background 0.3s; text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--gold2); }
+  .btn-ghost-light {
+    background: transparent; color: #fff;
+    border: 1px solid rgba(255,255,255,0.4);
+    padding: 0.85rem 2rem; font-family: 'Jost', sans-serif;
+    font-size: 0.78rem; letter-spacing: 0.1em;
+    cursor: pointer; font-weight: 400;
+    transition: border-color 0.3s; text-decoration: none; display: inline-block;
+  }
+  .btn-ghost-light:hover { border-color: #fff; }
+  .btn-outline {
+    background: transparent; color: var(--ink);
+    border: 1px solid rgba(28,27,25,0.25);
+    padding: 0.85rem 2rem; font-family: 'Jost', sans-serif;
+    font-size: 0.78rem; letter-spacing: 0.1em;
+    cursor: pointer; font-weight: 400;
+    transition: border-color 0.3s, color 0.3s; text-decoration: none; display: inline-block;
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* Video mute toggle */
+  .mute-btn {
+    position: absolute; bottom: 2rem; right: 3rem; z-index: 3;
+    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+    color: #fff; width: 40px; height: 40px; border-radius: 50%;
+    font-size: 0.95rem; cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    transition: background 0.3s; backdrop-filter: blur(6px);
+  }
+  .mute-btn:hover { background: rgba(255,255,255,0.28); }
+
+  /* ─── STATS ─── */
+  .stats-strip {
+    background: var(--white);
+    border-bottom: 1px solid rgba(28,27,25,0.08);
+    display: flex; justify-content: center; flex-wrap: wrap;
+  }
+  .stat {
+    flex: 1; min-width: 140px;
+    padding: 2rem 1.5rem; text-align: center;
+    border-right: 1px solid rgba(28,27,25,0.07);
+  }
+  .stat:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.4rem; font-weight: 300;
+    color: var(--gold); display: block; line-height: 1;
+  }
+  .stat-label { font-size: 0.68rem; letter-spacing: 0.12em; color: var(--stone); margin-top: 0.4rem; display: block; }
+
+  /* ─── SECTION BASE ─── */
+  section { padding: 6rem 3rem; }
+  .section-label {
+    font-size: 0.68rem; letter-spacing: 0.25em;
+    color: var(--gold); margin-bottom: 1rem; font-weight: 400;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 300; line-height: 1.15;
+    margin-bottom: 1.5rem; color: var(--ink);
+  }
+  .section-body {
+    color: var(--stone); font-size: 0.95rem;
+    line-height: 1.85; max-width: 560px;
+  }
+
+  /* ─── FEATURED ─── */
+  .featured { background: var(--white); }
+  .featured-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: center;
+  }
+  .featured-image-wrap { position: relative; }
+  .featured-image-wrap img {
+    width: 100%; aspect-ratio: 4/3;
+    object-fit: cover; display: block;
+  }
+  .property-tag {
+    position: absolute; top: 1.2rem; left: 1.2rem;
+    background: var(--gold); color: var(--white);
+    padding: 0.3rem 0.9rem; font-size: 0.65rem;
+    letter-spacing: 0.12em; font-weight: 500;
+  }
+  .price-tag {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem; color: var(--gold);
+    margin: 1.5rem 0 0.5rem; font-weight: 300;
+  }
+  .property-specs {
+    display: flex; gap: 2rem; margin: 1.5rem 0 2rem;
+    padding: 1.2rem 0; flex-wrap: wrap;
+    border-top: 1px solid rgba(28,27,25,0.08);
+    border-bottom: 1px solid rgba(28,27,25,0.08);
+  }
+  .spec { text-align: center; }
+  .spec-val { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--ink); display: block; }
+  .spec-lbl { font-size: 0.65rem; letter-spacing: 0.1em; color: var(--stone); }
+
+  /* ─── PROPERTIES GRID ─── */
+  .properties { background: var(--bg2); }
+  .properties-inner { max-width: 1200px; margin: 0 auto; }
+  .props-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; flex-wrap: wrap; gap: 1rem; }
+  .props-grid {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    gap: 1.5px; background: rgba(28,27,25,0.07);
+  }
+  .prop-card {
+    background: var(--white);
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+    color: inherit;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .prop-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+  }
+  .prop-card:hover .prop-img { transform: scale(1.05); }
+  .prop-img-wrap { overflow: hidden; aspect-ratio: 4/3; }
+  .prop-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; display: block; }
+  .prop-info { padding: 1.4rem 1.2rem 1.6rem; background: var(--white); }
+  .prop-name { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--ink); margin-bottom: 0.3rem; }
+  .prop-loc { font-size: 0.72rem; color: var(--stone); letter-spacing: 0.06em; margin-bottom: 1rem; }
+  .prop-meta { display: flex; justify-content: space-between; align-items: center; }
+  .prop-price { color: var(--gold); font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; }
+  .prop-beds { font-size: 0.7rem; color: var(--stone); }
+
+  /* ─── ABOUT ─── */
+  .about {
+    background: var(--bg3); display: grid;
+    grid-template-columns: 1fr 1fr; gap: 0;
+    padding: 0; overflow: hidden;
+  }
+  .about-img {
+    min-height: 520px;
+    background: url('https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=900&q=80&auto=format&fit=crop') center/cover no-repeat;
+  }
+  .about-content {
+    padding: 6rem 4rem;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .about-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.45rem; font-style: italic;
+    color: var(--ink2); line-height: 1.55;
+    border-left: 2px solid var(--gold);
+    padding-left: 1.5rem; margin: 2rem 0;
+  }
+
+  /* ─── DESIGN FOCUS ─── */
+  .design-focus { background: var(--bg2); }
+  .design-focus-inner { max-width: 1200px; margin: 0 auto; }
+  .focus-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  .focus-card {
+    background: rgba(255,255,255,0.7);
+    border: 1px solid rgba(28,27,25,0.08);
+    padding: 1.5rem 1.2rem;
+    min-height: 220px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .focus-chip {
+    display: inline-block;
+    font-size: 0.64rem; letter-spacing: 0.16em;
+    color: var(--gold); text-transform: uppercase; font-weight: 500;
+  }
+  .focus-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem; font-weight: 300; color: var(--ink);
+    margin-top: 1rem;
+  }
+  .focus-card p {
+    font-size: 0.82rem; line-height: 1.8; color: var(--stone);
+    margin-top: 0.8rem;
+  }
+
+  /* ─── TESTIMONIALS ─── */
+  .testimonials { background: var(--white); text-align: center; }
+  .testimonials-inner { max-width: 680px; margin: 0 auto; }
+  .testi-stars { color: var(--gold); font-size: 1rem; letter-spacing: 0.2em; margin-bottom: 1.5rem; }
+  .testi-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem; font-style: italic;
+    line-height: 1.6; color: var(--ink2); margin-bottom: 2rem;
+  }
+  .testi-author { font-size: 0.75rem; letter-spacing: 0.15em; color: var(--stone); }
+  .testi-nav { display: flex; justify-content: center; align-items: center; gap: 0.6rem; margin-top: 2.5rem; }
+  .testi-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(28,27,25,0.18); cursor: pointer; transition: all 0.3s ease; }
+  .testi-dot.active { width: 26px; border-radius: 6px; background: var(--gold); }
+
+  /* ─── CONTACT ─── */
+  .contact { background: var(--bg); }
+  .contact-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 5rem; align-items: start;
+  }
+  .contact-item { margin-bottom: 2rem; }
+  .contact-item-label { font-size: 0.65rem; letter-spacing: 0.18em; color: var(--gold); margin-bottom: 0.4rem; display: block; }
+  .contact-item-val { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--ink2); }
+  .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-field {
+    background: var(--white);
+    border: 1px solid rgba(28,27,25,0.14);
+    color: var(--ink); padding: 0.85rem 1rem;
+    font-family: 'Jost', sans-serif; font-size: 0.85rem;
+    font-weight: 300; outline: none;
+    transition: border-color 0.3s; width: 100%;
+  }
+  .form-field::placeholder { color: rgba(28,27,25,0.3); }
+  .form-field:focus { border-color: var(--gold); }
+  textarea.form-field { resize: vertical; min-height: 110px; }
+  select.form-field { appearance: none; cursor: pointer; background: var(--white); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--ink); color: rgba(245,242,237,0.55);
+    padding: 3rem; display: flex;
+    justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+    padding-bottom: max(3rem, env(safe-area-inset-bottom, 0px));
+  }
+  .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; letter-spacing: 0.18em; color: rgba(245,242,237,0.85); }
+  .footer-logo span { color: var(--gold2); }
+  .footer-copy { font-size: 0.72rem; }
+  .footer-links { display: flex; gap: 1.5rem; }
+  .footer-links a { font-size: 0.72rem; color: rgba(245,242,237,0.4); text-decoration: none; transition: color 0.3s; }
+  .footer-links a:hover { color: rgba(245,242,237,0.85); }
+
+  /* ─── TABLET (601–1024px) ─── */
+  @media (max-width: 1024px) and (min-width: 601px) {
+    nav { padding: 1.2rem 2rem; }
+    nav.scrolled { padding: 0.8rem 2rem; }
+    .nav-links { gap: 1.6rem; }
+    .nav-links a { font-size: 0.72rem; }
+    section { padding: 5rem 2rem; }
+    .hero {
+      height: 85vh;
+      min-height: 520px;
+    }
+    .hero-video {
+      object-fit: cover;
+      object-position: center center;
+      width: 100%;
+      height: 100%;
+      transform: none;
+    }
+    .hero-content { padding: 0 2rem 4.5rem; }
+    .scroll-ind { left: 2rem; }
+    .mute-btn { right: 2rem; }
+    .featured-inner { grid-template-columns: 1fr; gap: 2.5rem; max-width: 680px; }
+    .props-grid { grid-template-columns: 1fr 1fr; }
+    .about { grid-template-columns: 1fr; }
+    .about-img { min-height: 320px; }
+    .about-content { padding: 4rem 2rem; }
+    .contact-inner { grid-template-columns: 1fr; gap: 3rem; max-width: 660px; }
+    .stat { min-width: 120px; padding: 1.6rem 1rem; }
+    footer { padding: 2.5rem 2rem; }
+  }
+
+  /* ─── MOBILE (≤600px) ─── */
+  @media (max-width: 1024px) {
+    .focus-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .video-showcase-inner { grid-template-columns: 1fr; }
+    .video-card video { height: 420px; }
+  }
+
+  @media (max-width: 600px) {
+    nav { padding: 1.1rem 1.2rem; }
+    nav.scrolled { padding: 0.75rem 1.2rem; }
+    .nav-links, .nav-cta { display: none; }
+    .hamburger { display: flex; }
+    .hero {
+      height: 100vh;
+      min-height: 520px;
+    }
+    .hero-video {
+      object-fit: cover;
+      object-position: center center;
+      transform: none;
+    }
+    .hero-overlay {
+      background: linear-gradient(
+        to top,
+        rgba(10,12,13,0.58) 0%,
+        rgba(10,12,13,0.22) 52%,
+        rgba(10,12,13,0.10) 100%
+      );
+    }
+    section { padding: 4rem 1.2rem; }
+    .mute-btn { right: 1.2rem; bottom: 1.5rem; }
+    .featured-inner { grid-template-columns: 1fr; gap: 2rem; }
+    .props-grid { grid-template-columns: 1fr; }
+    .props-header { flex-direction: column; align-items: flex-start; }
+    .about { grid-template-columns: 1fr; }
+    .about-img { min-height: 240px; }
+    .about-content { padding: 3rem 1.2rem; }
+    .focus-grid { grid-template-columns: 1fr; }
+    .contact-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+    .form-row { grid-template-columns: 1fr; }
+    .stat { min-width: 90px; padding: 1.3rem 0.6rem; }
+    .stat-num { font-size: 1.8rem; }
+    .property-specs { gap: 1rem; }
+    footer { flex-direction: column; text-align: center; padding: 2rem 1.2rem; }
+  }
+
+  @media (min-width: 601px) { .hamburger { display: none; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">VISTA<span>.</span>BAY</a>
+  <ul class="nav-links">
+    <li><a href="#properties">Properties</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Enquire</button>
+  <div class="hamburger" onclick="document.querySelector('.mobile-menu').classList.add('open')" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu">
+  <button class="close-menu" onclick="document.querySelector('.mobile-menu').classList.remove('open')">✕</button>
+  <a href="#properties" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Properties</a>
+  <a href="#about" onclick="document.querySelector('.mobile-menu').classList.remove('open')">About</a>
+  <a href="#contact" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Contact</a>
+</div>
+
+<!-- HERO with VIDEO -->
+<section class="hero" id="home">
+  <video class="hero-video" id="heroVideo" autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1800&q=85&auto=format&fit=crop">
+    <source src="RAM.mp4" media="(max-width: 768px)" type="video/mp4">
+    <source src="RAM2.mp4" media="(min-width: 769px)" type="video/mp4">
+    <source src="RAM2.mp4" type="video/mp4">
+    <!-- Fallback: poster image shown if video fails -->
+  </video>
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content" aria-hidden="true">
+    <p class="hero-eyebrow">Luxury Coastal Residences</p>
+    <h1 class="hero-title">Where the <em>sea meets</em><br>extraordinary living</h1>
+    <p class="hero-sub">Curated waterfront homes in the world’s most coveted addresses.</p>
+    <div class="hero-actions">
+      <a href="#properties" class="btn-primary">View Properties</a>
+      <a href="#contact" class="btn-ghost-light">Private Viewing</a>
+    </div>
+  </div>
+
+  <button class="mute-btn" id="muteBtn" onclick="toggleMute()" title="Toggle sound">🔇</button>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stat"><span class="stat-num">₹48Cr+</span><span class="stat-label">Highest Closing</span></div>
+  <div class="stat"><span class="stat-num">340</span><span class="stat-label">Properties Sold</span></div>
+  <div class="stat"><span class="stat-num">18</span><span class="stat-label">Years Experience</span></div>
+  <div class="stat"><span class="stat-num">96%</span><span class="stat-label">Client Satisfaction</span></div>
+</div>
+
+<!-- FEATURED LISTING -->
+<section class="featured" id="featured">
+  <div class="featured-inner">
+    <a href="villa-details.html?id=sama-villa" class="featured-image-wrap" style="display:block; text-decoration:none;">
+      <div class="property-tag">FEATURED</div>
+      <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=900&q=80&auto=format&fit=crop" alt="Sama Villa — Vista Bay" loading="lazy">
+    </a>
+    <div class="featured-text">
+      <p class="section-label">SIGNATURE LISTING</p>
+      <h2 class="section-title">Sama Villa<br><span style="font-style:italic; color:var(--stone); font-family:'Cormorant Garamond',serif; font-size:1.4rem;">Vista Bay Waterfront</span></h2>
+      <p class="section-body">A private waterfront estate where every room faces open water. Designed around the idea that light, not walls, defines space — floor-to-ceiling glazing, a floating infinity pool, and a private mooring for two vessels.</p>
+      <div class="price-tag">₹28,50,00,000</div>
+      <div class="property-specs">
+        <div class="spec"><span class="spec-val">6</span><span class="spec-lbl">Bedrooms</span></div>
+        <div class="spec"><span class="spec-val">8</span><span class="spec-lbl">Bathrooms</span></div>
+        <div class="spec"><span class="spec-val">892</span><span class="spec-lbl">Sq. Metres</span></div>
+        <div class="spec"><span class="spec-val">∞</span><span class="spec-lbl">Pool</span></div>
+      </div>
+      <a href="villa-details.html?id=sama-villa" class="btn-primary">View Full Villa Details →</a>
+    </div>
+  </div>
+</section>
+
+<!-- PROPERTIES GRID -->
+<section class="properties" id="properties">
+  <div class="properties-inner">
+    <div class="props-header">
+      <div>
+        <p class="section-label">OUR PORTFOLIO</p>
+        <h2 class="section-title">Curated Listings</h2>
+      </div>
+      <a href="#contact" class="btn-outline">View All</a>
+    </div>
+    <div class="props-grid">
+      <a href="villa-details.html?id=azure-residence" class="prop-card">
+        <div class="prop-img-wrap">
+          <img class="prop-img" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=700&q=80&auto=format&fit=crop" alt="Azure Residence" loading="lazy">
+        </div>
+        <div class="prop-info">
+          <p class="prop-name">Azure Residence</p>
+          <p class="prop-loc">Udaipur Lakefront, Rajasthan</p>
+          <div class="prop-meta"><span class="prop-price">₹12.8 Cr</span><span class="prop-beds">4 Bed · 5 Bath</span></div>
+        </div>
+      </a>
+      <a href="villa-details.html?id=ciel-blanc" class="prop-card">
+        <div class="prop-img-wrap">
+          <img class="prop-img" src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=700&q=80&auto=format&fit=crop" alt="Ciel Blanc" loading="lazy">
+        </div>
+        <div class="prop-info">
+          <p class="prop-name">Ciel Blanc</p>
+          <p class="prop-loc">Goa Coastal Reserve</p>
+          <div class="prop-meta"><span class="prop-price">₹9.5 Cr</span><span class="prop-beds">5 Bed · 6 Bath</span></div>
+        </div>
+      </a>
+      <a href="villa-details.html?id=the-meridian" class="prop-card">
+        <div class="prop-img-wrap">
+          <img class="prop-img" src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=700&q=80&auto=format&fit=crop" alt="The Meridian" loading="lazy">
+        </div>
+        <div class="prop-info">
+          <p class="prop-name">The Meridian</p>
+          <p class="prop-loc">Mumbai Sea-View, Worli</p>
+          <div class="prop-meta"><span class="prop-price">₹22 Cr</span><span class="prop-beds">3 Bed · Penthouse</span></div>
+        </div>
+      </a>
+      <a href="villa-details.html?id=palm-court-villa" class="prop-card">
+        <div class="prop-img-wrap">
+          <img class="prop-img" src="https://images.unsplash.com/photo-1613977257363-707ba9348227?w=700&q=80&auto=format&fit=crop" alt="Palm Court Villa" loading="lazy">
+        </div>
+        <div class="prop-info">
+          <p class="prop-name">Palm Court Villa</p>
+          <p class="prop-loc">Alibaug, Maharashtra</p>
+          <div class="prop-meta"><span class="prop-price">₹7.2 Cr</span><span class="prop-beds">4 Bed · 4 Bath</span></div>
+        </div>
+      </a>
+      <a href="villa-details.html?id=tara-house" class="prop-card">
+        <div class="prop-img-wrap">
+          <img class="prop-img" src="https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?w=700&q=80&auto=format&fit=crop" alt="Tara House" loading="lazy">
+        </div>
+        <div class="prop-info">
+          <p class="prop-name">Tara House</p>
+          <p class="prop-loc">Dehradun Hills, Uttarakhand</p>
+          <div class="prop-meta"><span class="prop-price">₹4.6 Cr</span><span class="prop-beds">5 Bed · 3 Bath</span></div>
+        </div>
+      </a>
+      <a href="villa-details.html?id=horizon-loft" class="prop-card">
+        <div class="prop-img-wrap">
+          <img class="prop-img" src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=700&q=80&auto=format&fit=crop" alt="Horizon Loft" loading="lazy">
+        </div>
+        <div class="prop-info">
+          <p class="prop-name">Horizon Loft</p>
+          <p class="prop-loc">Bangalore, Whitefield</p>
+          <div class="prop-meta"><span class="prop-price">₹3.8 Cr</span><span class="prop-beds">3 Bed · Sky Deck</span></div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about" style="padding:0;">
+  <div class="about-img" role="img" aria-label="Luxury interior"></div>
+  <div class="about-content">
+    <p class="section-label">OUR PHILOSOPHY</p>
+    <h2 class="section-title">More than a property.<br>A way of living.</h2>
+    <blockquote class="about-quote">"We do not sell walls and roofs. We find the address that becomes the background of your finest years."</blockquote>
+    <p class="section-body" style="max-width:100%;">Vista Bay was founded on the belief that true luxury is not square footage — it is the light that enters your home in the morning, the view that greets you at dusk, and the knowledge that every detail was attended to before you arrived.</p>
+    <a href="#contact" class="btn-primary" style="margin-top:2rem; display:inline-block;">Meet Our Advisors</a>
+  </div>
+</section>
+
+<!-- DESIGN FOCUS -->
+<section class="design-focus" id="design-focus">
+  <div class="design-focus-inner">
+    <p class="section-label">DESIGN LANGUAGE</p>
+    <h2 class="section-title">The details that define Vista Bay</h2>
+    <div class="focus-grid">
+      <article class="focus-card">
+        <div class="focus-chip">FONDS</div>
+        <h3>Fonts &amp; Typography</h3>
+        <p>Elegant serif headlines and refined sans-serif copy create a premium balance between warmth and clarity.</p>
+      </article>
+      <article class="focus-card">
+        <div class="focus-chip">BAAR</div>
+        <h3>Navigation Bars</h3>
+        <p>Minimal, floating navigation keeps the experience effortless while preserving a sense of luxury and openness.</p>
+      </article>
+      <article class="focus-card">
+        <div class="focus-chip">LE OUTE</div>
+        <h3>Layouts</h3>
+        <p>Spacious, grid-based compositions lead the eye gently from story to view, creating calm and confidence.</p>
+      </article>
+      <article class="focus-card">
+        <div class="focus-chip">IMAGE SAME</div>
+        <h3>Imagery &amp; Aesthetics</h3>
+        <p>Textured, cinematic photography and tactile neutrals give every section a curated, high-end atmosphere.</p>
+      </article>
+      <article class="focus-card">
+        <div class="focus-chip">LIGHT SAME</div>
+        <h3>Lighting &amp; Theming</h3>
+        <p>Soft gold accents, warm shadows, and coastal tones shape a serene palette that feels both modern and timeless.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="testimonials-inner">
+    <p class="section-label">CLIENT VOICES</p>
+    <div class="testi-stars">★ ★ ★ ★ ★</div>
+    <p class="testi-text" id="testiText">"The team at Vista Bay did not just find us a property — they found us a life. We saw three homes in two days and knew immediately which one was ours."</p>
+    <p class="testi-author" id="testiAuthor">— Rahul & Priya Mehra, Udaipur Lakefront</p>
+    <div class="testi-nav">
+      <div class="testi-dot active" onclick="showTesti(0)"></div>
+      <div class="testi-dot" onclick="showTesti(1)"></div>
+      <div class="testi-dot" onclick="showTesti(2)"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <p class="section-label">GET IN TOUCH</p>
+      <h2 class="section-title">Begin your<br>property journey</h2>
+      <p class="section-body" style="margin-bottom:2.5rem;">Whether you are seeking your first luxury acquisition or expanding a portfolio, our advisors are ready for a private consultation — in person, by call, or on video.</p>
+      <div class="contact-item">
+        <span class="contact-item-label">PHONE</span>
+        <span class="contact-item-val">+91 94141 00000</span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-item-label">EMAIL</span>
+        <span class="contact-item-val">hello@vistabay.in</span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-item-label">OFFICE</span>
+        <span class="contact-item-val">City Palace Road, Udaipur 313001</span>
+      </div>
+    </div>
+    <form class="contact-form" onsubmit="handleSubmit(event)">
+      <div class="form-row">
+        <input type="text" class="form-field" placeholder="First Name" required>
+        <input type="text" class="form-field" placeholder="Last Name" required>
+      </div>
+      <input type="email" class="form-field" placeholder="Email Address" required>
+      <input type="tel" class="form-field" placeholder="Phone Number">
+      <select class="form-field">
+        <option value="" disabled selected>Budget Range</option>
+        <option>Under ₹5 Crore</option>
+        <option>₹5 – 15 Crore</option>
+        <option>₹15 – 30 Crore</option>
+        <option>Above ₹30 Crore</option>
+      </select>
+      <textarea class="form-field" placeholder="Tell us about your ideal property…"></textarea>
+      <button type="submit" class="btn-primary" id="submitBtn">Send Enquiry</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">VISTA<span>.</span>BAY</div>
+  <p class="footer-copy">© 2026 Vista Bay Real Estate. All rights reserved.</p>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Instagram</a>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  const video = document.getElementById('heroVideo');
+  let currentVideoSrc = '';
+
+  function updateHeroVideo() {
+    if (!video) return;
+    const isPortrait = window.matchMedia('(orientation: portrait)').matches;
+    const isPortraitScreen = window.innerWidth <= 600 || (window.innerWidth <= 1024 && isPortrait);
+    const targetSrc = isPortraitScreen ? 'RAM.mp4' : 'RAM2.mp4';
+
+    if (currentVideoSrc !== targetSrc) {
+      currentVideoSrc = targetSrc;
+      const isMuted = video.muted;
+      video.src = targetSrc;
+      video.muted = isMuted;
+      video.load();
+      video.play().catch(() => {});
+    }
+  }
+
+  updateHeroVideo();
+  window.addEventListener('resize', updateHeroVideo);
+  window.addEventListener('orientationchange', updateHeroVideo);
+
+  function updateHeroScale() {
+    if (!video) return;
+    if (window.innerWidth > 768) {
+      const scrollAmount = Math.min(window.scrollY / 700, 0.18);
+      video.style.transform = `scale(${1 + scrollAmount})`;
+    } else {
+      video.style.transform = 'none';
+    }
+  }
+  window.addEventListener('scroll', updateHeroScale, { passive: true });
+  updateHeroScale();
+
+  // Video mute toggle
+  function toggleMute() {
+    video.muted = !video.muted;
+    muteBtn.textContent = video.muted ? '🔇' : '🔊';
+  }
+
+  // Testimonials
+  const testis = [
+    { text: '"The team at Vista Bay did not just find us a property — they found us a life. We saw three homes in two days and knew immediately which one was ours."', author: '— Rahul & Priya Mehra, Udaipur Lakefront' },
+    { text: '"Impeccable service from the first call to the moment we received our keys. Our advisor\'s market knowledge saved us from two poor decisions and secured the right one."', author: '— Aarav Singhania, Mumbai Penthouse' },
+    { text: '"I had worked with agents in Delhi and Goa before. Nothing compares. Vista Bay operates on a different level entirely — attentive, discreet, and deeply knowledgeable."', author: '— Divya Nair, Goa Coastal Estate' }
+  ];
+  let currentTesti = 0;
+  function showTesti(i) {
+    currentTesti = i;
+    document.getElementById('testiText').textContent = testis[i].text;
+    document.getElementById('testiAuthor').textContent = testis[i].author;
+    document.querySelectorAll('.testi-dot').forEach((d,idx) => d.classList.toggle('active', idx === i));
+  }
+  setInterval(() => showTesti((currentTesti + 1) % testis.length), 5500);
+
+  // Form submit
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.textContent = 'Enquiry Sent ✓';
+    btn.style.background = '#3D7A7C';
+    setTimeout(() => { btn.textContent = 'Send Enquiry'; btn.style.background = ''; }, 3000);
+  }
+
+  document.querySelectorAll('.mobile-menu a').forEach(a => {
+    a.addEventListener('click', () => document.querySelector('.mobile-menu').classList.remove('open'));
+  });
+</script>
+</body>
+</html>

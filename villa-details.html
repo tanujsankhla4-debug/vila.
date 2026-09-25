@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title id="pageTitle">Villa Details — Vista Bay</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #F5F2ED;
+    --bg2:     #EDEAE3;
+    --bg3:     #E6E1D8;
+    --white:   #FFFFFF;
+    --ink:     #1C1B19;
+    --ink2:    #3A3830;
+    --stone:   #7A7568;
+    --gold:    #B8963E;
+    --gold2:   #D4AF60;
+    --teal:    #3D7A7C;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *, *::before, *::after { box-sizing: inherit; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    overflow-x: hidden;
+    font-weight: 300;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: env(safe-area-inset-top, 0px);
+    left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 3rem;
+    background: rgba(245,242,237,0.97);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 1px 0 rgba(28,27,25,0.08);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.45rem;
+    font-weight: 300;
+    letter-spacing: 0.16em;
+    color: var(--ink);
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--stone);
+    text-decoration: none;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    transition: color 0.3s;
+    font-weight: 400;
+  }
+  .nav-back:hover { color: var(--gold); }
+  .nav-cta {
+    background: var(--gold);
+    border: none;
+    color: var(--white);
+    padding: 0.5rem 1.2rem;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-weight: 400;
+    text-decoration: none;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .nav-cta:hover { background: var(--gold2); }
+
+  /* ─── HEADER / HERO ─── */
+  .detail-hero {
+    margin-top: 70px;
+    padding: 3rem 3rem 1.5rem;
+    max-width: 1260px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .breadcrumbs {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    color: var(--stone);
+    margin-bottom: 1.2rem;
+  }
+  .breadcrumbs a { color: var(--stone); text-decoration: none; }
+  .breadcrumbs a:hover { color: var(--gold); }
+  .header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .property-tag {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--white);
+    padding: 0.25rem 0.8rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    font-weight: 500;
+    margin-bottom: 0.8rem;
+    text-transform: uppercase;
+    border-radius: 2px;
+  }
+  .property-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--ink);
+  }
+  .property-location {
+    font-size: 0.92rem;
+    color: var(--stone);
+    margin-top: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .price-box {
+    text-align: right;
+  }
+  .price-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    color: var(--stone);
+    text-transform: uppercase;
+  }
+  .price-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    color: var(--gold);
+    font-weight: 300;
+    line-height: 1;
+    margin-top: 0.2rem;
+  }
+
+  /* ─── INTERACTIVE PHOTO GALLERY ─── */
+  .gallery-container {
+    margin-bottom: 3.5rem;
+  }
+  .gallery-main-wrap {
+    width: 100%;
+    height: 480px;
+    overflow: hidden;
+    position: relative;
+    border-radius: 4px;
+    background: #000;
+  }
+  .gallery-main-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: opacity 0.3s ease, transform 0.4s ease;
+    display: block;
+  }
+  .gallery-thumbs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+    margin-top: 0.8rem;
+  }
+  .thumb-item {
+    height: 110px;
+    border-radius: 3px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    background: var(--bg2);
+  }
+  .thumb-item.active {
+    border-color: var(--gold);
+    box-shadow: 0 4px 12px rgba(184,150,62,0.25);
+  }
+  .thumb-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s;
+  }
+  .thumb-item:hover img {
+    transform: scale(1.05);
+  }
+
+  /* ─── QUICK SPECS STRIP ─── */
+  .specs-strip {
+    background: var(--white);
+    border: 1px solid rgba(28,27,25,0.08);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    margin-bottom: 3.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+  }
+  .spec-item {
+    padding: 1.6rem 1rem;
+    text-align: center;
+    border-right: 1px solid rgba(28,27,25,0.06);
+  }
+  .spec-item:last-child { border-right: none; }
+  .spec-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.9rem;
+    color: var(--ink);
+    line-height: 1;
+    font-weight: 400;
+  }
+  .spec-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    color: var(--stone);
+    margin-top: 0.35rem;
+    text-transform: uppercase;
+    display: block;
+  }
+
+  /* ─── MAIN CONTENT LAYOUT ─── */
+  .details-layout {
+    display: grid;
+    grid-template-columns: 1.8fr 1.1fr;
+    gap: 4rem;
+    align-items: start;
+    margin-bottom: 4rem;
+  }
+
+  .section-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    margin-bottom: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+  .block-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 3vw, 2.2rem);
+    font-weight: 300;
+    margin-bottom: 1.2rem;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .overview-text {
+    color: var(--ink2);
+    font-size: 0.98rem;
+    line-height: 1.85;
+    margin-bottom: 2.5rem;
+  }
+
+  /* Amenities */
+  .amenities-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.1rem 1.8rem;
+    margin: 1.8rem 0 3.5rem;
+  }
+  .amenity-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.9rem;
+    color: var(--ink2);
+  }
+  .amenity-icon {
+    width: 24px;
+    height: 24px;
+    background: rgba(184,150,62,0.12);
+    color: var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    flex-shrink: 0;
+  }
+
+  /* Specifications Table */
+  .specs-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.2rem;
+    margin-bottom: 3.5rem;
+  }
+  .specs-table tr {
+    border-bottom: 1px solid rgba(28,27,25,0.08);
+  }
+  .specs-table td {
+    padding: 0.9rem 0;
+    font-size: 0.88rem;
+  }
+  .specs-table td:first-child {
+    color: var(--stone);
+    width: 42%;
+  }
+  .specs-table td:last-child {
+    color: var(--ink);
+    font-weight: 400;
+  }
+
+  /* ─── STICKY ENQUIRY CARD ─── */
+  .enquiry-card {
+    background: var(--white);
+    border: 1px solid rgba(28,27,25,0.1);
+    padding: 2.2rem 2rem;
+    position: sticky;
+    top: 90px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    border-radius: 3px;
+  }
+  .enquiry-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.75rem;
+    font-weight: 300;
+    margin-bottom: 0.4rem;
+  }
+  .enquiry-card p {
+    font-size: 0.82rem;
+    color: var(--stone);
+    margin-bottom: 1.6rem;
+    line-height: 1.5;
+  }
+  .form-field {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid rgba(28,27,25,0.14);
+    padding: 0.85rem 1rem;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.85rem;
+    margin-bottom: 0.9rem;
+    outline: none;
+    transition: border-color 0.3s;
+    border-radius: 2px;
+  }
+  .form-field:focus { border-color: var(--gold); }
+  .btn-submit {
+    width: 100%;
+    background: var(--gold);
+    color: var(--white);
+    border: none;
+    padding: 0.95rem;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    font-weight: 400;
+    transition: background 0.3s;
+    text-transform: uppercase;
+    border-radius: 2px;
+  }
+  .btn-submit:hover { background: var(--gold2); }
+  .advisor-box {
+    margin-top: 1.8rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid rgba(28,27,25,0.08);
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+  }
+  .advisor-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .advisor-name { font-size: 0.85rem; font-weight: 500; color: var(--ink); }
+  .advisor-role { font-size: 0.72rem; color: var(--stone); }
+
+  /* ─── SIMILAR VILLAS ─── */
+  .similar-section {
+    background: var(--bg2);
+    padding: 5rem 3rem;
+  }
+  .similar-inner {
+    max-width: 1260px;
+    margin: 0 auto;
+  }
+  .props-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  .prop-card {
+    background: var(--white);
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    border: 1px solid rgba(28,27,25,0.07);
+    transition: transform 0.3s, box-shadow 0.3s;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .prop-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+  }
+  .prop-img-wrap {
+    aspect-ratio: 16/10;
+    overflow: hidden;
+  }
+  .prop-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
+    display: block;
+  }
+  .prop-card:hover .prop-img-wrap img {
+    transform: scale(1.05);
+  }
+  .prop-info {
+    padding: 1.3rem;
+  }
+  .prop-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    color: var(--ink);
+    margin-bottom: 0.2rem;
+  }
+  .prop-loc {
+    font-size: 0.72rem;
+    color: var(--stone);
+    margin-bottom: 0.9rem;
+  }
+  .prop-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(28,27,25,0.07);
+    padding-top: 0.8rem;
+  }
+  .prop-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    color: var(--gold);
+  }
+  .prop-beds {
+    font-size: 0.7rem;
+    color: var(--stone);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--ink);
+    color: rgba(245,242,237,0.55);
+    padding: 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    padding-bottom: max(3rem, env(safe-area-inset-bottom, 0px));
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    letter-spacing: 0.18em;
+    color: rgba(245,242,237,0.85);
+  }
+  .footer-logo span { color: var(--gold2); }
+  .footer-copy { font-size: 0.72rem; }
+  .footer-links { display: flex; gap: 1.5rem; }
+  .footer-links a { font-size: 0.72rem; color: rgba(245,242,237,0.4); text-decoration: none; }
+  .footer-links a:hover { color: rgba(245,242,237,0.85); }
+
+  /* ─── TABLET (601px – 1024px) ─── */
+  @media (max-width: 1024px) and (min-width: 601px) {
+    nav { padding: 1rem 2rem; }
+    .detail-hero { padding: 2.2rem 2rem 1.5rem; margin-top: 65px; }
+    .gallery-main-wrap { height: 380px; }
+    .thumb-item { height: 95px; }
+    .specs-strip { grid-template-columns: repeat(3, 1fr); }
+    .spec-item:nth-child(3) { border-right: none; }
+    .spec-item:nth-child(4) { border-top: 1px solid rgba(28,27,25,0.06); }
+    .spec-item:nth-child(5) { border-top: 1px solid rgba(28,27,25,0.06); }
+    .details-layout { grid-template-columns: 1fr; gap: 3rem; }
+    .enquiry-card { position: static; max-width: 650px; }
+    .props-grid { grid-template-columns: 1fr 1fr; }
+    .similar-section { padding: 4rem 2rem; }
+  }
+
+  /* ─── MOBILE (≤ 600px) ─── */
+  @media (max-width: 600px) {
+    nav { padding: 0.85rem 1.2rem; }
+    .nav-logo { font-size: 1.25rem; }
+    .nav-back { font-size: 0.72rem; }
+    .nav-cta { padding: 0.45rem 0.9rem; font-size: 0.7rem; }
+    .detail-hero { padding: 1.5rem 1.2rem 1rem; margin-top: 60px; }
+    .header-main { flex-direction: column; align-items: flex-start; gap: 0.8rem; margin-bottom: 1.5rem; }
+    .price-box { text-align: left; }
+    .price-val { font-size: 2.2rem; }
+    .gallery-main-wrap { height: 260px; }
+    .gallery-thumbs { gap: 0.5rem; margin-top: 0.5rem; }
+    .thumb-item { height: 68px; }
+    .specs-strip { grid-template-columns: 1fr 1fr; margin-bottom: 2.5rem; }
+    .spec-item { padding: 1.2rem 0.6rem; }
+    .spec-item:nth-child(2) { border-right: none; }
+    .spec-item:nth-child(3), .spec-item:nth-child(4), .spec-item:nth-child(5) {
+      border-top: 1px solid rgba(28,27,25,0.06);
+    }
+    .spec-item:nth-child(5) { grid-column: span 2; border-right: none; }
+    .spec-val { font-size: 1.6rem; }
+    .details-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+    .amenities-grid { grid-template-columns: 1fr; gap: 0.9rem; margin-bottom: 2.5rem; }
+    .enquiry-card { position: static; padding: 1.8rem 1.2rem; }
+    .props-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .similar-section { padding: 3rem 1.2rem; }
+    footer { flex-direction: column; text-align: center; padding: 2rem 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">VISTA<span>.</span>BAY</a>
+  <a href="index.html#properties" class="nav-back">← Properties</a>
+  <a href="#enquire" class="nav-cta">Enquire</a>
+</nav>
+
+<!-- MAIN VILLA CONTAINER -->
+<main class="detail-hero">
+  <div class="breadcrumbs">
+    <a href="index.html">Home</a> / <a href="index.html#properties">Properties</a> / <span id="breadcrumbName">Villa Details</span>
+  </div>
+
+  <div class="header-main">
+    <div>
+      <span class="property-tag" id="villaTag">SIGNATURE LISTING</span>
+      <h1 class="property-title" id="villaTitle">Sama Villa</h1>
+      <p class="property-location" id="villaLocation">📍 Vista Bay Waterfront, Goa</p>
+    </div>
+    <div class="price-box">
+      <div class="price-label">Offered At</div>
+      <div class="price-val" id="villaPrice">₹28,50,00,000</div>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE PHOTO GALLERY -->
+  <div class="gallery-container">
+    <div class="gallery-main-wrap">
+      <img id="mainGalleryImg" class="gallery-main-img" src="" alt="Villa main image">
+    </div>
+    <div class="gallery-thumbs" id="galleryThumbs">
+      <!-- Thumbs inserted via JS -->
+    </div>
+  </div>
+
+  <!-- QUICK SPECS -->
+  <div class="specs-strip">
+    <div class="spec-item"><span class="spec-val" id="specBeds">6</span><span class="spec-label">Bedrooms</span></div>
+    <div class="spec-item"><span class="spec-val" id="specBaths">8</span><span class="spec-label">Bathrooms</span></div>
+    <div class="spec-item"><span class="spec-val" id="specArea">892</span><span class="spec-label">Sq. Metres</span></div>
+    <div class="spec-item"><span class="spec-val" id="specPool">Infinity</span><span class="spec-label">Private Pool</span></div>
+    <div class="spec-item"><span class="spec-val" id="specFacing">Sunset Sea</span><span class="spec-label">Orientation</span></div>
+  </div>
+
+  <!-- DETAILS & ENQUIRY -->
+  <div class="details-layout">
+    <div class="details-content">
+      <p class="section-label">ARCHITECTURAL STATEMENT</p>
+      <h2 class="block-title" id="storyTitle">Where light defines luxury.</h2>
+      <p class="overview-text" id="storyDesc">
+        A private waterfront estate designed around the rhythm of the sea. Floor-to-ceiling double-glazed panels open completely to unify the expansive marble interiors with the cantilevered teak terrace and floating horizon pool.
+      </p>
+
+      <p class="section-label">EXCLUSIVE AMENITIES</p>
+      <h2 class="block-title">Curated Privileges</h2>
+      <div class="amenities-grid" id="amenitiesGrid">
+        <!-- populated by JS -->
+      </div>
+
+      <p class="section-label">PROPERTY SPECIFICATIONS</p>
+      <h2 class="block-title">Key Information</h2>
+      <table class="specs-table">
+        <tbody>
+          <tr><td>Property ID</td><td id="specId">VB-8092</td></tr>
+          <tr><td>Furnishing Status</td><td id="specFurnish">Fully Curated & Furnished</td></tr>
+          <tr><td>Year Built</td><td id="specYear">2025</td></tr>
+          <tr><td>Parking Spaces</td><td id="specParking">4 Covered + Private Mooring</td></tr>
+          <tr><td>Ownership</td><td>Freehold Clear Title</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ENQUIRY CARD -->
+    <div class="enquiry-card" id="enquire">
+      <h3>Arrange a Viewing</h3>
+      <p>Schedule a confidential private consultation or walkthrough with our senior advisor.</p>
+      <form onsubmit="handleDetailsSubmit(event)">
+        <input type="text" class="form-field" placeholder="Your Full Name" required>
+        <input type="email" class="form-field" placeholder="Email Address" required>
+        <input type="tel" class="form-field" placeholder="Phone Number" required>
+        <input type="date" class="form-field">
+        <textarea class="form-field" rows="3" placeholder="Preferred time or specific requests..."></textarea>
+        <button type="submit" class="btn-submit" id="detailsSubmitBtn">Schedule Private Tour</button>
+      </form>
+      <div class="advisor-box">
+        <img class="advisor-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&q=80&auto=format&fit=crop" alt="Advisor">
+        <div>
+          <div class="advisor-name">Natasha Vardhan</div>
+          <div class="advisor-role">Senior Waterfront Portfolio Director</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- SIMILAR PROPERTIES -->
+<section class="similar-section">
+  <div class="similar-inner">
+    <p class="section-label">MORE LISTINGS</p>
+    <h2 class="block-title">Explore Other Residences</h2>
+    <div class="props-grid" id="similarGrid">
+      <!-- populated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">VISTA<span>.</span>BAY</div>
+  <p class="footer-copy">© 2026 Vista Bay Real Estate. All rights reserved.</p>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="index.html#properties">Properties</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+</footer>
+
+<script>
+const villasData = {
+  "sama-villa": {
+    id: "sama-villa",
+    code: "VB-1001",
+    tag: "SIGNATURE LISTING",
+    title: "Sama Villa",
+    location: "Vista Bay Waterfront, Goa",
+    price: "₹28,50,00,000",
+    beds: "6",
+    baths: "8",
+    area: "892",
+    pool: "Infinity",
+    facing: "Sunset Sea",
+    furnish: "Fully Curated Italian Decor",
+    year: "2025",
+    parking: "4 Covered + Private Mooring",
+    storyTitle: "Where ocean meets extraordinary living.",
+    storyDesc: "A private waterfront estate designed around the rhythm of open water. Designed so that light, not walls, defines space — floor-to-ceiling glazing, a floating infinity pool overlooking the horizon, and a private mooring for two luxury vessels.",
+    images: [
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1600&q=85&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=900&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=900&q=80&auto=format&fit=crop"
+    ],
+    amenities: [
+      "Private Heated Infinity Pool", "Direct Waterfront & Boat Dock",
+      "Floor-to-Ceiling Impact Glass", "Wine Cellar & Tasting Room",
+      "Private Elevators (All Levels)", "Smart Home Automation System",
+      "Staff Quarters & Service Wing", "24/7 Monitored Gated Security"
+    ]
+  },
+  "azure-residence": {
+    id: "azure-residence",
+    code: "VB-1002",
+    tag: "LAKEFRONT ESTATE",
+    title: "Azure Residence",
+    location: "Udaipur Lakefront, Rajasthan",
+    price: "₹12,80,00,000",
+    beds: "4",
+    baths: "5",
+    area: "650",
+    pool: "Lakeview Lap Pool",
+    facing: "Lake Pichola",
+    furnish: "Custom Handcrafted Heritage",
+    year: "2024",
+    parking: "3 Covered Bay Parking",
+    storyTitle: "Palatial tranquility upon the royal lakes.",
+    storyDesc: "Situated on the peaceful edge of Udaipur's most scenic waters, Azure Residence blends traditional Rajasthani stone craftsmanship with crisp modernist glass pavilion architecture. The private lake deck offers uninterrupted sunrise vistas.",
+    images: [
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=85&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=900&q=80&auto=format&fit=crop"
+    ],
+    amenities: [
+      "Private Lake Observation Deck", "Temperature-Controlled Lap Pool",
+      "Courtyard with Water Features", "Hand-Carved Marble Fireplaces",
+      "Solar Powered Eco-Grid", "Chef's Exhibition Kitchen",
+      "Private Spa & Steam Room", "Concierge Chauffeur Valet"
+    ]
+  },
+  "ciel-blanc": {
+    id: "ciel-blanc",
+    code: "VB-1003",
+    tag: "COASTAL RETREAT",
+    title: "Ciel Blanc",
+    location: "Goa Coastal Reserve",
+    price: "₹9,50,00,000",
+    beds: "5",
+    baths: "6",
+    area: "720",
+    pool: "Cascading Infinity",
+    facing: "Arabian Sea",
+    furnish: "Minimalist Scandinavian Coastal",
+    year: "2025",
+    parking: "3 Cars + Golf Cart",
+    storyTitle: "Pure white aesthetics amidst tropical cliffside greenery.",
+    storyDesc: "Ciel Blanc commands a private cliffside overlooking pristine ocean waters. Designed with monolithic white lime-plaster walls, open-air shower pavilions, and sun-drenched terraced gardens that catch continuous sea breezes.",
+    images: [
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600&q=85&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=900&q=80&auto=format&fit=crop"
+    ],
+    amenities: [
+      "Cascading 3-Tier Infinity Pool", "Private Path to Secluded Beach",
+      "Outdoor Teak Dining Pavilion", "Acoustic Home Cinema Suite",
+      "Rooftop Sunset Stargazing Deck", "Sub-Zero Gourmet Appliances",
+      "Integrated Climate Micro-Zoning", "High-Speed Fiber Satellite"
+    ]
+  },
+  "the-meridian": {
+    id: "the-meridian",
+    code: "VB-1004",
+    tag: "SKY PENTHOUSE",
+    title: "The Meridian",
+    location: "Mumbai Sea-View, Worli",
+    price: "₹22,00,00,000",
+    beds: "3",
+    baths: "4",
+    area: "510",
+    pool: "Sky Terrace Jacuzzi",
+    facing: "360° Arabian Sea Horizon",
+    furnish: "Armani Casa Bespoke",
+    year: "2024",
+    parking: "4 Reserved Basement Bays",
+    storyTitle: "High-altitude sanctuary above Mumbai's coastline.",
+    storyDesc: "Occupying the entire top two floors of Worli's landmark tower, The Meridian delivers uncompromised panoramas of the sea link and skyline. Features private dual high-speed elevators, double-height ceilings, and an outdoor sky lounge.",
+    images: [
+      "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1600&q=85&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=900&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=900&q=80&auto=format&fit=crop"
+    ],
+    amenities: [
+      "Private High-Speed Direct Lift", "Sky Terrace with Heated Jacuzzi",
+      "Double-Height Glass Living Salon", "Private Wine Cellar & Bar",
+      "Helipad Access on Rooftop", "24/7 White Glove Butler Service",
+      "Biometric Security & Surveillance", "Smart Lutron Lighting System"
+    ]
+  },
+  "palm-court-villa": {
+    id: "palm-court-villa",
+    code: "VB-1005",
+    tag: "TROPICAL ESTATE",
+    title: "Palm Court Villa",
+    location: "Alibaug, Maharashtra",
+    price: "₹7,20,00,000",
+    beds: "4",
+    baths: "4",
+    area: "580",
+    pool: "Heated Plunge Pool",
+    facing: "Private Coconut Grove",
+    furnish: "Balinese Teak & Linen",
+    year: "2024",
+    parking: "3 Covered Car Ports",
+    storyTitle: "A peaceful sanctuary among mature palm groves.",
+    storyDesc: "Nestled in the lush coastal greenery of Alibaug, Palm Court Villa is crafted for serene weekend escapes and luxury multi-generational family living. Extensive open verandas merge into lush private manicured lawns.",
+    images: [
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=1600&q=85&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=900&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=900&q=80&auto=format&fit=crop"
+    ],
+    amenities: [
+      "Heated Swimming & Plunge Pool", "Lush 1-Acre Manicured Garden",
+      "Outdoor Woodfired Pizza Pavilion", "Open-Air Garden Bathrooms",
+      "Full Generator Power Backup", "Dedicated Caretaker Quarters",
+      "EV Fast Charging Station", "Organic Kitchen Herb Garden"
+    ]
+  },
+  "tara-house": {
+    id: "tara-house",
+    code: "VB-1006",
+    tag: "MOUNTAIN VILLA",
+    title: "Tara House",
+    location: "Dehradun Hills, Uttarakhand",
+    price: "₹4,60,00,000",
+    beds: "5",
+    baths: "3",
+    area: "490",
+    pool: "Heated Indoor Pool",
+    facing: "Mussoorie Ridge View",
+    furnish: "Cedar Wood & Natural Slate",
+    year: "2023",
+    parking: "2 Covered Bays",
+    storyTitle: "Himalayan valley vistas and pine forest air.",
+    storyDesc: "Perched along the scenic foothills of Dehradun, Tara House combines cedar timber architecture, floor-to-ceiling glass viewing galleries, and dual stone fireplaces to create an inviting year-round mountain haven.",
+    images: [
+      "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?w=1600&q=85&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=900&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=900&q=80&auto=format&fit=crop"
+    ],
+    amenities: [
+      "Heated Indoor Wellness Pool", "Dual Riverstone Fireplaces",
+      "Expansive Mussoorie View Deck", "Pinewood Library & Study",
+      "Radiant In-Floor Heating", "Rainwater Harvesting System",
+      "Private Forest Hiking Access", "High-Security Solar Perimeter"
+    ]
+  },
+  "horizon-loft": {
+    id: "horizon-loft",
+    code: "VB-1007",
+    tag: "MODERN LOFT",
+    title: "Horizon Loft",
+    location: "Bangalore, Whitefield",
+    price: "₹3,80,00,000",
+    beds: "3",
+    baths: "3",
+    area: "380",
+    pool: "Terrace Deck Jacuzzi",
+    facing: "East Morning Sun",
+    furnish: "Contemporary Industrial Chic",
+    year: "2025",
+    parking: "2 Covered Basement Slots",
+    storyTitle: "Urban contemporary luxury with expansive sky deck.",
+    storyDesc: "A masterwork of modern loft living featuring 22-foot double-height ceilings, exposed concrete and brass details, smart automated glass facades, and a private landscaped sky deck overlooking Bangalore's tech corridor.",
+    images: [
+      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1600&q=85&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1567496898669-ee935f5f647a?w=900&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=900&q=80&auto=format&fit=crop"
+    ],
+    amenities: [
+      "22-ft Double-Height Living Room", "Private Landscaped Sky Deck",
+      "Automated Smart Glass Facades", "Bose Integrated Surround Audio",
+      "Private Wine Chiller & Bar", "Clubhouse & Concierge Access",
+      "EV Charger in Parking Bay", "Zero-Carbon Certified Build"
+    ]
+  }
+};
+
+function getParam(key) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(key);
+}
+
+const currentId = getParam('id') || 'sama-villa';
+const villa = villasData[currentId] || villasData['sama-villa'];
+
+// Populate UI
+document.title = `${villa.title} — Vista Bay Luxury Real Estate`;
+document.getElementById('pageTitle').textContent = `${villa.title} — Vista Bay`;
+document.getElementById('breadcrumbName').textContent = villa.title;
+document.getElementById('villaTag').textContent = villa.tag;
+document.getElementById('villaTitle').textContent = villa.title;
+document.getElementById('villaLocation').textContent = `📍 ${villa.location}`;
+document.getElementById('villaPrice').textContent = villa.price;
+
+// Setup Interactive Gallery
+const mainImg = document.getElementById('mainGalleryImg');
+mainImg.src = villa.images[0];
+
+const thumbsContainer = document.getElementById('galleryThumbs');
+thumbsContainer.innerHTML = villa.images.map((src, index) => `
+  <div class="thumb-item ${index === 0 ? 'active' : ''}" onclick="switchPhoto('${src}', this)">
+    <img src="${src}" alt="Villa thumbnail ${index + 1}" loading="lazy">
+  </div>
+`).join('');
+
+function switchPhoto(src, el) {
+  mainImg.style.opacity = '0.4';
+  setTimeout(() => {
+    mainImg.src = src;
+    mainImg.style.opacity = '1';
+  }, 150);
+  document.querySelectorAll('.thumb-item').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Specs
+document.getElementById('specBeds').textContent = villa.beds;
+document.getElementById('specBaths').textContent = villa.baths;
+document.getElementById('specArea').textContent = villa.area;
+document.getElementById('specPool').textContent = villa.pool;
+document.getElementById('specFacing').textContent = villa.facing;
+
+document.getElementById('storyTitle').textContent = villa.storyTitle;
+document.getElementById('storyDesc').textContent = villa.storyDesc;
+
+document.getElementById('specId').textContent = villa.code;
+document.getElementById('specFurnish').textContent = villa.furnish;
+document.getElementById('specYear').textContent = villa.year;
+document.getElementById('specParking').textContent = villa.parking;
+
+// Amenities
+const amenitiesContainer = document.getElementById('amenitiesGrid');
+amenitiesContainer.innerHTML = villa.amenities.map(item => `
+  <div class="amenity-item">
+    <div class="amenity-icon">✓</div>
+    <span>${item}</span>
+  </div>
+`).join('');
+
+// Similar Villas
+const similarContainer = document.getElementById('similarGrid');
+const otherVillas = Object.values(villasData).filter(v => v.id !== villa.id).slice(0, 3);
+similarContainer.innerHTML = otherVillas.map(v => `
+  <a href="villa-details.html?id=${v.id}" class="prop-card">
+    <div class="prop-img-wrap">
+      <img src="${v.images[0]}" alt="${v.title}" loading="lazy">
+    </div>
+    <div class="prop-info">
+      <p class="prop-name">${v.title}</p>
+      <p class="prop-loc">${v.location}</p>
+      <div class="prop-meta">
+        <span class="prop-price">${v.price}</span>
+        <span class="prop-beds">${v.beds} Bed · ${v.baths} Bath</span>
+      </div>
+    </div>
+  </a>
+`).join('');
+
+function handleDetailsSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('detailsSubmitBtn');
+  btn.textContent = 'Request Sent ✓';
+  btn.style.background = '#3D7A7C';
+  setTimeout(() => {
+    btn.textContent = 'Schedule Private Tour';
+    btn.style.background = '';
+  }, 4000);
+}
+</script>
+</body>
+</html>
